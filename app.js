@@ -32,6 +32,7 @@ if ('development' == app.get('env')) {
 app.get('/gestures/index', gesture.allDatabaseIdentifiers);
 app.get('/gestures/:db/names', gesture.allStrokeSequenceNames);
 app.get('/gestures/:db', gesture.allGesturesInDatabase);
+app.get('/gestures/db/all', gesture.allGestures);
 app.get('/gestures/:db/:gestureName', gesture.gesturesWithName);
 app.get('/gestures/:db/signature/:signature', gesture.gesturesWithSignature);
 app.post('/gestures/:db/:gestureName', gesture.addGesture);

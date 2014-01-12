@@ -21,21 +21,26 @@ exports.allStrokeSequenceNames = function(req, res) {
 	});
 }
 
+function strokeSequenceMap(seqs) {
+	var seqMap = {};
+
+	seqs.forEach(function(seq) {
+		if (!seqMap[seq.name])
+			seqMap[seq.name] = [];
+
+		seqMap[seq.name].push(seq);
+	});
+
+	return seqMap;
+}
+
 exports.allGesturesInDatabase = function(req, res) {
 	StrokeSequence.find({}, function(err, seqs) {
 		if (err)
 			return res.send(400, err);
 
-		var seqMap = {};
 
-		seqs.forEach(function(seq) {
-			if (!seqMap[seq.name])
-				seqMap[seq.name] = [];
-
-			seqMap[seq.name].push(seq);
-		});
-
-		return res.send(200, {identifier:req.params.db, strokeSequenceMap:seqMap});
+		return res.send(200, {identifier:req.params.db, strokeSequenceMap:strokeSequenceMap(seqs)});
 	});
 }
 
@@ -100,5 +105,14 @@ exports.removeGestureWithSignature = function(req, res) {
 		}
 
 		return res.send(200, {status:"ok",signature:req.body.signature,count:count});
+	});
+}
+
+exports.allGestures = function(req, res) {
+	StrokeSequence.find({}, function(err, seqs) {
+		if (err)
+			return res.send(400, err);
+
+		return res.send(200, {"identifier":"<union>", "strokeSequenceMap":strokeSequenceMap(seqs)});
 	});
 }
