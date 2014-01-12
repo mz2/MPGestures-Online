@@ -49,8 +49,6 @@ exports.gesturesWithName = function(req, res) {
 }
 
 exports.addGesture = function(req, res) {
-	console.log(req.params);
-	console.log(req.body);
 
 	req.body.database = req.params.db;
 
@@ -85,5 +83,15 @@ exports.addGesture = function(req, res) {
 	        }
 	    });
 	});
+}
 
+exports.removeGestureWithSignature = function(req, res) {
+	StrokeSequence.remove({"$and":[{database:req.params.db}, {signature:req.body.signature}]},
+		function(err, results) {
+		if (err) {
+			return res.send(400, err);
+		}
+
+		return res.send(200, {status:"ok",signature:req.body.signature,count:result});
+	});
 }
