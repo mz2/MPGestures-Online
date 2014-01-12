@@ -57,7 +57,6 @@ exports.addGesture = function(req, res) {
 	StrokeSequence.findBySignature(req.params.db, req.body.signature, function(err, foundItems) {
 
 		if (err) {
-			console.log(err);
 			return res.send(400, err);
 		}
 
@@ -75,8 +74,7 @@ exports.addGesture = function(req, res) {
 
 	    seq.save(function(err) {
 	        if (!err) {
-	            console.log('created');
-				return res.send(200, seq);
+	        	return res.send(200, seq);
 	        }
 	        else {
 	    		return res.send(400, err);
@@ -85,13 +83,22 @@ exports.addGesture = function(req, res) {
 	});
 }
 
+exports.gesturesWithSignature = function(req, res) {
+	StrokeSequence.findBySignature(req.params.db, req.params.signature, function(err, foundItems) {
+		if (err)
+			return res.send(400, err);
+
+		return res.send(foundItems);
+	});
+}
+
 exports.removeGestureWithSignature = function(req, res) {
 	StrokeSequence.remove({"$and":[{database:req.params.db}, {signature:req.body.signature}]},
-		function(err, results) {
+		function(err, count) {
 		if (err) {
 			return res.send(400, err);
 		}
 
-		return res.send(200, {status:"ok",signature:req.body.signature,count:result});
+		return res.send(200, {status:"ok",signature:req.body.signature,count:count});
 	});
 }
